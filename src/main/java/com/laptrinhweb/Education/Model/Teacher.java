@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "teachers")
 public class Teacher {
@@ -41,9 +43,17 @@ public class Teacher {
     @Lob
     @Column(name = "avatar", columnDefinition = "LONGBLOB")
     private byte [] avatar;
+    private String username;
+    private String password;
     public Teacher() {
     }
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "teachers_roles",
+            joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private Set<Role> roles;
     public String getWorkDay() {
         return workDay;
     }
@@ -138,5 +148,29 @@ public class Teacher {
 
     public void setSubject(@NotEmpty(message = "Dữ liệu không được để trống") String subject) {
         this.subject = subject;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -12,11 +12,10 @@ import java.util.List;
 @Service
 public class StudentService {
     private StudentRepository studentRepository;
-    private AccountService accountService;
+
     @Autowired
-    public StudentService(StudentRepository studentRepository, AccountService accountService) {
+    public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
-        this.accountService = accountService;
     }
     // Thêm học sinh
     public Student saveStudent (Student student, MultipartFile file) throws IOException {
@@ -25,7 +24,6 @@ public class StudentService {
         }
         Student saveStudent = studentRepository.save(student);
         // Them tai khoan mac dinh
-        accountService.saveAccountStudent(saveStudent);
         return saveStudent;
     }
     // Lấy toàn bộ học sinh

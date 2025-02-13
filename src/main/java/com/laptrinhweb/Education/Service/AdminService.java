@@ -1,23 +1,30 @@
 package com.laptrinhweb.Education.Service;
 
 import com.laptrinhweb.Education.Model.Admin;
+import com.laptrinhweb.Education.Model.Role;
 import com.laptrinhweb.Education.Repository.AdminRepository;
+import com.laptrinhweb.Education.Repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AdminService {
     private AdminRepository adminRepository;
-    private AccountService accountService;
+    private PasswordEncoder passwordEncoder;
+    private RoleRepository roleRepository;
     @Autowired
-    public AdminService(AdminRepository adminRepository, AccountService accountService) {
+    public AdminService(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.adminRepository = adminRepository;
-        this.accountService = accountService;
+        this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
     // Them admin
     @Transactional
@@ -26,9 +33,19 @@ public class AdminService {
             admin.setAvatar(file.getBytes());
         }
         // Luu admin truoc
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+        // 1. Kiểm tra và tạo Role
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN").orElseGet(() -> {
+            Role newRole = new Role();
+            newRole.setName("ROLE_ADMIN");
+            return roleRepository.save(newRole);
+        });
+
+        // 2. Gán Role cho Admin
+        Set<Role> roles = new HashSet<>();  // Sử dụng HashSet để tránh trùng lặp
+        roles.add(adminRole);
+        admin.setRoles(roles);
         Admin saveAdmin = adminRepository.save(admin);
-        // Tao account tu dong
-        accountService.saveAccountForAdmin(saveAdmin);
         return  saveAdmin;
     }
     // Lay theo id

@@ -1,9 +1,16 @@
 package com.laptrinhweb.Education.Model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "admins")
 public class Admin {
@@ -32,15 +39,18 @@ public class Admin {
     @Column(name = "workDay")
     @NotEmpty
     private String workDay;
+    private String username;
+    private String password;
     @Lob
     @Column(name = "avatar", columnDefinition = "LONGBLOB")
     private byte [] avatar;
     // Cac mapping
-    @OneToOne(mappedBy = "admin", cascade =  CascadeType.ALL)
-    private Account account;
-    public Admin() {
-    }
-
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "admins_roles",
+            joinColumns = @JoinColumn(name = "admin_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private Set<Role> roles;
     public int getId() {
         return id;
     }
@@ -121,11 +131,27 @@ public class Admin {
         this.avatar = avatar;
     }
 
-    public Account getAccount() {
-        return account;
+    public String getUsername() {
+        return username;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

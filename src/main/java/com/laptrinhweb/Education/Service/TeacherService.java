@@ -1,23 +1,30 @@
 package com.laptrinhweb.Education.Service;
 
+import com.laptrinhweb.Education.Model.Role;
 import com.laptrinhweb.Education.Model.Teacher;
+import com.laptrinhweb.Education.Repository.RoleRepository;
 import com.laptrinhweb.Education.Repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TeacherService {
     private TeacherRepository teacherRepository;
-    private AccountService accountService;
+    private PasswordEncoder passwordEncoder;
+    private RoleRepository roleRepository;
     @Autowired
-    public TeacherService(TeacherRepository teacherRepository, AccountService accountService) {
+    public TeacherService(TeacherRepository teacherRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.teacherRepository = teacherRepository;
-        this.accountService = accountService;
+        this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
     //    Thêm giáo viên
     @Transactional
@@ -26,9 +33,20 @@ public class TeacherService {
             teacher.setAvatar(file.getBytes());
         }
         // Luu giao vien truoc
+        teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
+        // 1. Kiểm tra và tạo Role
+        Role teacherRole = roleRepository.findByName("ROLE_TEACHER").orElseGet(() -> {
+            Role newRole = new Role();
+            newRole.setName("ROLE_TEACHER");
+            return roleRepository.save(newRole);
+        });
+
+        // 2. Gán Role cho Admin
+        Set<Role> roles = new HashSet<>();  // Sử dụng HashSet để tránh trùng lặp
+        roles.add(teacherRole);
+        teacher.setRoles(roles);
         Teacher saveTeacher = teacherRepository.save(teacher);
         // Luu tai khoan tu dong
-        accountService.saveAccountForTeacher(saveTeacher);
         return  saveTeacher;
     }
     // Lấy theo id

@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/teacher")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TeacherController {
     private TeacherService teacherService;
     @Autowired
@@ -32,7 +33,9 @@ public class TeacherController {
                                         @RequestParam("address") String address,
                                         @RequestParam("workDay") String workDay,
                                         @RequestParam("subject") String subject,
-                                        @RequestParam(value = "avatar",  required = false) MultipartFile avtar
+                                        @RequestParam("username") String username,
+                                        @RequestParam("password") String passwrod,
+                                        @RequestParam(value = "avatar",  required = false)MultipartFile avtar
     ){
         try{
             Teacher teacher = new Teacher();
@@ -46,6 +49,8 @@ public class TeacherController {
             teacher.setAddress(address);
             teacher.setWorkDay(workDay);
             teacher.setSubject(subject);
+            teacher.setUsername(username);
+            teacher.setPassword(passwrod);
             Teacher addTeacher = teacherService.saveTeacher(teacher,avtar);
             return ResponseEntity.ok(addTeacher);
         }

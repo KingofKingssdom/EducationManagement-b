@@ -13,12 +13,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AdminController {
     private AdminService adminService;
     @Autowired
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
+
     @PostMapping("/add")
     public ResponseEntity<?> addAdmin(@Valid
                                       @RequestParam("idAdmin") String idAdmin,
@@ -29,6 +31,8 @@ public class AdminController {
                                       @RequestParam("phone") String phone,
                                       @RequestParam("address") String address,
                                       @RequestParam("workDay") String workDay,
+                                      @RequestParam("username") String username,
+                                      @RequestParam("password") String password,
                                       @RequestParam(value = "avatar", required = false) MultipartFile avatar
     ){
         try{
@@ -41,6 +45,8 @@ public class AdminController {
             admin.setWorkDay(workDay);
             admin.setAddress(address);
             admin.setGender(gender);
+            admin.setUsername(username);
+            admin.setPassword(password);
             Admin addAdmin = adminService.saveAdmin(admin,avatar);
             return ResponseEntity.ok(addAdmin);
         }
@@ -50,11 +56,13 @@ public class AdminController {
         return ResponseEntity.badRequest().body("Failed to upload avatar");
     }
     // Lay theo id
+
     @GetMapping("/{id}")
     public Admin getAdminById(@PathVariable int id) {
         return adminService.findById(id);
     }
     // Cap nhap theo id
+
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateAdminById (@PathVariable int id,
                                               @RequestParam("idAdmin") String idAdmin,
@@ -88,11 +96,13 @@ public class AdminController {
     }
 
     // Lay tat ca admin
+
     @GetMapping("/getAll")
     public List<Admin> getAllAdmin(){
         return adminService.findAllAdmin();
     }
     // Dem so luong admin
+
     @GetMapping("/count")
     public long countAdmin(){
         return adminService.countAdmin();

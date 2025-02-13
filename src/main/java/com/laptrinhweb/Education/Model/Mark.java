@@ -12,7 +12,7 @@ public class Mark {
     private double fifteenMinutes;
     @Column(name = "fortyFiveMinutesTest")
     private double fortyFiveMinutes;
-    @Column(name = "semester")
+    @Column(name = "semesterTest")
     private double semesterMark;
     // Các ánh xạ
     @ManyToOne

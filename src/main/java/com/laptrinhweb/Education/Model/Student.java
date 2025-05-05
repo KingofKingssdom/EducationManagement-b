@@ -40,7 +40,7 @@ public class Student {
     @NotEmpty(message = "Dữ liệu không được để trống")
     private String classroom;
     @Lob
-    @Column(name = "avatar", columnDefinition = "LONGBLOB")
+    @Column(name = "avatar")
     private byte [] avatar;
 
     // Các ánh xạ

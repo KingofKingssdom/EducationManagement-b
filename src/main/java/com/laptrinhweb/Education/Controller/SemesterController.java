@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/semester")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SemesterController {
     private SemesterService semesterService;
     @Autowired

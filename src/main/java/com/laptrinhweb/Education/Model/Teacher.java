@@ -41,7 +41,7 @@ public class Teacher {
     @NotEmpty(message = "Dữ liệu không được để trống")
     private String subject;
     @Lob
-    @Column(name = "avatar", columnDefinition = "LONGBLOB")
+    @Column(name = "avatar")
     private byte [] avatar;
     private String username;
     private String password;

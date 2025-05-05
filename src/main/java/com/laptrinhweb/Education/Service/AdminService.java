@@ -5,7 +5,6 @@ import com.laptrinhweb.Education.Model.Role;
 import com.laptrinhweb.Education.Repository.AdminRepository;
 import com.laptrinhweb.Education.Repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,12 +17,11 @@ import java.util.Set;
 @Service
 public class AdminService {
     private AdminRepository adminRepository;
-    private PasswordEncoder passwordEncoder;
+
     private RoleRepository roleRepository;
     @Autowired
-    public AdminService(AdminRepository adminRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public AdminService(AdminRepository adminRepository, RoleRepository roleRepository) {
         this.adminRepository = adminRepository;
-        this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
     }
     // Them admin
@@ -32,8 +30,7 @@ public class AdminService {
         if(!file.isEmpty()){
             admin.setAvatar(file.getBytes());
         }
-        // Luu admin truoc
-        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+
         // 1. Kiểm tra và tạo Role
         Role adminRole = roleRepository.findByName("ROLE_ADMIN").orElseGet(() -> {
             Role newRole = new Role();

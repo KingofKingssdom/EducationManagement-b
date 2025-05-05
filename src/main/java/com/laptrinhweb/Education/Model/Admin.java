@@ -42,7 +42,7 @@ public class Admin {
     private String username;
     private String password;
     @Lob
-    @Column(name = "avatar", columnDefinition = "LONGBLOB")
+    @Column(name = "avatar")
     private byte [] avatar;
     // Cac mapping
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

@@ -5,7 +5,6 @@ import com.laptrinhweb.Education.Model.Teacher;
 import com.laptrinhweb.Education.Repository.RoleRepository;
 import com.laptrinhweb.Education.Repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,12 +17,10 @@ import java.util.Set;
 @Service
 public class TeacherService {
     private TeacherRepository teacherRepository;
-    private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
     @Autowired
-    public TeacherService(TeacherRepository teacherRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public TeacherService(TeacherRepository teacherRepository, RoleRepository roleRepository) {
         this.teacherRepository = teacherRepository;
-        this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
     }
     //    Thêm giáo viên
@@ -32,8 +29,6 @@ public class TeacherService {
         if(!file.isEmpty()){
             teacher.setAvatar(file.getBytes());
         }
-        // Luu giao vien truoc
-        teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
         // 1. Kiểm tra và tạo Role
         Role teacherRole = roleRepository.findByName("ROLE_TEACHER").orElseGet(() -> {
             Role newRole = new Role();

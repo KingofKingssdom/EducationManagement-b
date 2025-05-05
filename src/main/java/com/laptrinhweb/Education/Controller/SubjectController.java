@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/subject")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SubjectController {
     private SubjectService subjectService;
     @Autowired
